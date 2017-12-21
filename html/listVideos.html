@@ -23,7 +23,9 @@
             var ytkey = 'AIzaSyAWr3SOkJjTENHXHstVWNOO7cMreQ1JVZ4';
             // var keyword = window.location.hash.substring(1);
             keyword = localStorage.getItem("keyword");
-            $('#input-search').val(keyword);
+            $('#input-search').val(keyword)
+            $("#loading-div-background").css({ opacity: 1.0 });
+
             var pageToken = localStorage.getItem("pageToken");
             if (pageToken === null) {
               youtubeApiCall();
@@ -45,6 +47,8 @@
                 youtubeApiCall();
             });
             $("#hyv-searchBtn").on( "click touchstart", function( event ) {
+              // function ShowProgressAnimation(){
+              // }
                 localStorage.setItem("keyword", $('#input-search').val());
                 youtubeApiCall();
                 return false;
@@ -55,34 +59,33 @@
               youtubeApiCall();
               return false;
             });
-
-            jQuery( "#input-search" ).autocomplete({
-              source: function( request, response ) {
-                //console.log(request.term);
-                var sqValue = [];
-                jQuery.ajax({
-                    type: "POST",
-                    url: "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1",
-                    dataType: 'jsonp',
-                    data: jQuery.extend({
-                        q: request.term
-                    }, {  }),
-                    success: function(data){
-                        console.log(data[1]);
-                        obj = data[1];
-                        jQuery.each( obj, function( key, value ) {
-                            sqValue.push(value[0]);
-                        });
-                        response( sqValue);
-                    }
-                });
-              },
-              select: function( event, ui ) {
-                setTimeout( function () {
-                    youtubeApiCall();
-                }, 300);
-              }
-            });
+            // jQuery( "#input-search" ).autocomplete({
+            //   source: function( request, response ) {
+            //     //console.log(request.term);
+            //     var sqValue = [];
+            //     jQuery.ajax({
+            //         type: "POST",
+            //         url: "http://suggestqueries.google.com/complete/search?hl=en&ds=yt&client=youtube&hjson=t&cp=1",
+            //         dataType: 'jsonp',
+            //         data: jQuery.extend({
+            //             q: request.term
+            //         }, {  }),
+            //         success: function(data){
+            //             console.log(data[1]);
+            //             obj = data[1];
+            //             jQuery.each( obj, function( key, value ) {
+            //                 sqValue.push(value[0]);
+            //             });
+            //             response( sqValue);
+            //         }
+            //     });
+            //   },
+            //   select: function( event, ui ) {
+            //     setTimeout( function () {
+            //         youtubeApiCall();
+            //     }, 300);
+            //   }
+            // });
 
             function getVideoDetails(ids){
                 $.ajax({
@@ -91,6 +94,18 @@
                         key: ytkey,
                         part: 'snippet,contentDetails,statistics'
                     }, {id: ids}),
+                    beforeSend: function() {
+                        // setting a timeout
+                        // $("#loading-div-background").show();
+                    },
+                    error: function(xhr) { // if error occured
+                        alert("Error occured.please try again");
+                        $("#loading-div-background").hide();
+                    },
+                    complete: function() {
+                      $("#loading-div-background").hide();
+                      $("#hyv-watch-content").show();
+                    },
                     dataType: 'json',
                     type: 'GET',
                     timeout: 5000,
@@ -98,6 +113,7 @@
                     url: 'https://www.googleapis.com/youtube/v3/videos'
                 })
                 .done(function(data) {
+                    localStorage.setItem("listvideo", JSON.stringify(data));
                     updateViewVideoDetails(data);
                     // // JSON Responce to display for user
                     // new PrettyJSON.view.Node({
@@ -114,7 +130,6 @@
               });
               $("#hyv-watch-related").html(videoList);
               $("#hyv-watch-related").on('click touchstart', 'li', function() {
-                localStorage.setItem("listvideo", JSON.stringify(data));
                 // localStorage.setItem("keyword", $('#input-search').val());
                 window.location.href = 'playVideo.html';
                 // console.log(items);
@@ -138,7 +153,18 @@
                         key: "AIzaSyAWr3SOkJjTENHXHstVWNOO7cMreQ1JVZ4",
                         q: $("#input-search").val(),
                         part: 'snippet'
-                    }, {maxResults:5,pageToken:$("#pageToken").val()}),
+                    }, {maxResults:50,pageToken:$("#pageToken").val()}),
+                    beforeSend: function() {
+                        // setting a timeout
+                        $("#loading-div-background").show();
+                        $("#hyv-watch-related li").hide();
+                    },
+                    error: function(xhr) { // if error occured
+                        alert("Error occured.please try again");
+                        $("#loading-div-background").hide();
+                    },
+                    complete: function() {
+                    },
                     dataType: 'json',
                     type: 'GET',
                     timeout: 5000,
@@ -227,6 +253,11 @@
                               <button type="button" id="pageTokenPrev" value="" class="btn btn-default">Prev</button>
                               <button type="button" id="pageTokenNext" value="" class="btn btn-default">Next</button>
                             </div>
+                        </div>
+                        <div id="loading-div-background">
+                          <div id="loading-div" class="ui-corner-all">
+                            <img style="height:32px;width:32px;margin:30px;" src="images/please_wait.gif" alt="Loading.."/><br>PROCESSING. PLEASE WAIT...
+                          </div>
                         </div>
                         <div id="hyv-watch-content" class="hyv-watch-main-col hyv-card hyv-card-has-padding video-list">
                             <ul id="hyv-watch-related" class="hyv-video-list">

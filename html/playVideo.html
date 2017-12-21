@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>videojs-playlist Demo</title>
+  <link href="node_modules/video.js/dist/video-js.css" rel="stylesheet">
+  <link href="node_modules/videojs-playlist-thumbs/dist/videojs-playlist.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+  <link href="css/app.css" rel="stylesheet">
+  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+</head>
+<body>
+    <video id="videojs-playlist-player" class="video-js vjs-default-skin" controls autoplay preload="auto">
+    </video>
+    <div>
+        <button id="btn-back" type="button" class="btn btn-default btn-back">戻る</button>
+        <button id="btn-stop" type="button" class="btn btn-default btn-stop">終了する</button>
+    <div>
+  <script src="node_modules/video.js/dist/video.js"></script>
+  <script src="node_modules/videojs-youtube/dist/Youtube.js"></script>
+  <script src="node_modules/videojs-playlist-thumbs/dist/videojs-playlist.js"></script>
+  <script src="/libs/qimessaging/2/qimessaging.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <!-- <script src="/lib/jquery/jquery.min.js"></script> -->
+  <script src="js/tapper.js"></script>
+  <script src="js/contents.js"></script>
+  <script>
+    $( document ).ready(function() {
+      var data = JSON.parse(localStorage.getItem('listvideo'));
+       // = localStorage.getItem('listvideo');
+      // localStorage.removeItem("listvideo");
+
+      items = data.items;
+      var videosList = [];
+      $.each(items, function(index,e) {
+          var video = {}
+          video['src'] = "https://www.youtube.com/watch?v="+ e.id;
+          video['type'] = 'video/youtube';
+          video['title'] = e.snippet.title;
+          video['thumbnail'] = e.snippet.thumbnails.high.url;
+          videosList.push(video);
+      });
+
+      var player = videojs('videojs-playlist-player', { preload: true, techOrder: ["youtube"], controls: true});
+      player.bigPlayButton.hide();
+      // var video = videojs('videojs-playlist-player');
+      // video.on('pause', function() {
+      //   this.bigPlayButton.show();
+      //
+      //   // Now the issue is that we need to hide it again if we start playing
+      //   // So every time we do this, we can create a one-time listener for play events.
+      //   video.one('play', function() {
+      //     this.bigPlayButton.hide();
+      //   });
+      // });
+
+      player.playlist({ videos: videosList, playlist: { hideSidebar: false, upNext: true, hideIcons: false, thumbnailSize: 250, items: 4 } });
+      // var session = new QiSession();
+
+      $("body").on('click touchstart', function(e) {
+        // var xPos = e.originalEvent.touches[0].pageX;
+        // var yPos = e.originalEvent.touches[0].pageY;
+        // if (yPos < 550) {
+        //   if (video.paused()) {
+        //     video.play();
+        //   } else {
+        //     video.pause();
+        //   }
+        // }
+        // session.service("ALMemory").done(function (ALMemory) {
+        //   var height = $(window).height();   // returns height of browser viewport
+        //   var width = $(window).width();   // returns height of browser viewport
+        //   var str = "Size" + height + "," + width;
+        //   ALMemory.raiseEvent("Tapper/View/PlayVideo/Click/Next", yPos);
+        //
+        // });
+      });
+    });
+  </script>
+</body>
+</html>

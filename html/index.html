@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/app.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container searchCenter">
+    <p class="text-center title">Youtube</p>
+    <form id="index-search">
+      <div class="input-group">
+        <input id="input-search" type="text" class="form-control input-lg" placeholder="検索" name="search">
+        <div class="input-group-btn">
+            <button id="btn-voice" class="btn btn-default input-lg" type="button"><i class="glyphicon btn-voice"></i></button>
+        </div>
+        <div class="input-group-btn">
+          <button id="btn-search" class="btn btn-default input-lg" type="button"><i class="glyphicon btn-search"></i></button>
+        </div>
+      </div>
+    </form>
+  </div>
+<!-- <section id="pageResults">
+  <div class="container searchCenter">
+    <p class="title">Youtube</p>
+    <form>
+      <div class="input-group">
+        <input id="input-search" type="text" class="form-control input-lg" placeholder="検索" name="search">
+        <div class="input-group-btn">
+            <button id="btn-voice" class="btn btn-default input-lg" type="button"><i class="glyphicon btn-voice"></i></button>
+        </div>
+        <div class="input-group-btn">
+          <button id="btn-search" class="btn btn-default input-lg" type="button"><i class="glyphicon btn-search"></i></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section> -->
+<!-- The Modal -->
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p id="modalContent">お話しください..</p>
+  </div>
+
+</div>
+
+<button id="btn-stop" type="button" class="btn btn-default btn-stop">終了する</button>
+<script src="/libs/qimessaging/2/qimessaging.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="lib/js/jquery-2.1.4.js"></script> -->
+<!-- <script type="text/javascript" src="lib/js/jquery-ui.js"></script> -->
+<!-- <script src="/lib/jquery/jquery.min.js"></script> -->
+<script src="js/tapper.js"></script>
+<script src="js/contents.js"></script>
+<script>
+   var u = 1;
+   if(typeof jQuery != 'undefined') {
+     u = 2;
+   }
+   if (u==1) {
+     window.alert("No Internet Connection");
+   }
+     $("#index-search").submit(function() {
+       window.location.href = 'listVideos.html';
+       localStorage.setItem("keyword", $("#input-search").val());
+       return false;
+     });
+</script>
+</body>
+</html>
